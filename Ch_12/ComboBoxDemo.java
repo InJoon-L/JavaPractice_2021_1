@@ -28,7 +28,7 @@ public class ComboBoxDemo extends JFrame implements ActionListener{
 	}
 	
 	protected void changePicture(String name) {
-		ImageIcon icon = new ImageIcon(name + ".gif");
+		ImageIcon icon = new ImageIcon("image/"+ name + ".jpg");
 		label.setIcon(icon);
 		
 		label.setText(null);

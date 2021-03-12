@@ -27,7 +27,7 @@ public class SliderDemo extends JFrame implements ChangeListener{
 		panel.add(slider);
 		
 		btn = new JButton(" ");
-		ImageIcon icon = new ImageIcon("dog.gif");
+		ImageIcon icon = new ImageIcon("image/dog.jpg");
 		btn.setIcon(icon);
 		btn.setSize(INIT_VALUE * 10, INIT_VALUE * 10);
 		panel.add(btn);
