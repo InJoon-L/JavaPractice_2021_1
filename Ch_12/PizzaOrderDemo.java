@@ -77,7 +77,7 @@ public class PizzaOrderDemo extends JFrame implements ActionListener{
 		
 		public TypePanel() {
 			this.setLayout(new GridLayout(3, 1));
-			combo = new JRadioButton("콤보", true);
+			combo = new JRadioButton("콤보");
 			potato = new JRadioButton("포테이토");
 			bulgogi = new JRadioButton("불고기");
 			
@@ -116,7 +116,7 @@ public class PizzaOrderDemo extends JFrame implements ActionListener{
 		public ToppingPanel() {
 			this.setLayout(new GridLayout(4, 1));
 			
-			pepper = new JRadioButton("피망", true);
+			pepper = new JRadioButton("피망");
 			cheese = new JRadioButton("치즈");
 			peperoni = new JRadioButton("페페로니");
 			bacon = new JRadioButton("베이컨");

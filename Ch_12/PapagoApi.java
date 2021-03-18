@@ -2,6 +2,9 @@ package Ch_12;
 
 import javax.swing.*;
 
+import org.json.simple.*;
+import org.json.simple.parser.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
@@ -9,7 +12,7 @@ import java.net.*;
 import java.util.*;
 
 //나중에 papago api 추가예정
-public class TextConverter extends JFrame implements ActionListener{
+public class PapagoApi extends JFrame implements ActionListener{
 	private JButton converBtn;
 	private JButton cancelBtn;
 	private JTextArea textIn;
@@ -18,7 +21,7 @@ public class TextConverter extends JFrame implements ActionListener{
     private final String CLINENT_SECRET = Config.CLINENT_SECRET;//애플리케이션 클라이언트 시크릿값";
     private final String API_URI = "https://openapi.naver.com/v1/papago/n2mt";
     
-	public TextConverter() {
+	public PapagoApi() {
 		this.setTitle("텍스트 변환");
 		
 		textIn = new JTextArea(10, 14);
@@ -87,8 +90,7 @@ public class TextConverter extends JFrame implements ActionListener{
         requestHeaders.put("X-Naver-Client-Secret", CLINENT_SECRET);
 
         String result = post(API_URI, requestHeaders, text);
-//		result.substring(result.indexOf("translatedText") + "translatedText".length() + 3
-//				, result.indexOf("engineType") - 3);
+
 		return result;
 	}
 	
@@ -133,23 +135,31 @@ public class TextConverter extends JFrame implements ActionListener{
 
     private static String readBody(InputStream body) {
         InputStreamReader streamReader = new InputStreamReader(body);
+        JSONParser jsonParser = new JSONParser();
+        JSONObject jsonOb1;
+        String result = null;
         
-        try (BufferedReader lineReader = new BufferedReader(streamReader)) {
-            StringBuilder responseBody = new StringBuilder();
-
-            String line;
-            while ((line = lineReader.readLine()) != null) {
-                responseBody.append(line);
-            }
-            
-            return responseBody.toString();
-        } catch (IOException e) {
-            throw new RuntimeException("API 응답을 읽는데 실패했습니다.", e);
-        }
+        try {
+			jsonOb1 = (JSONObject) jsonParser.parse(streamReader);
+			JSONObject jsonOb2 = (JSONObject) jsonOb1.get("message");
+			JSONObject jsonOb3 = (JSONObject) jsonOb2.get("result");
+			result = jsonOb3.get("translatedText").toString();
+	        
+	        System.out.println("3: " + jsonOb3);
+	        System.out.println("번역: " + result);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        
+		return result;
     }
     
 	public static void main(String[] args) {
-		new TextConverter();
+		new PapagoApi();
 	}
 	
 
