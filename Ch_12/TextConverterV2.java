@@ -8,7 +8,7 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-public class TextConverter extends JFrame implements ActionListener{
+public class TextConverterV2 extends JFrame implements ActionListener{
 	private JButton converBtn;
 	private JButton cancelBtn;
 	private JTextArea textIn;
@@ -17,7 +17,7 @@ public class TextConverter extends JFrame implements ActionListener{
     private final String CLINENT_SECRET = Config.CLINENT_SECRET;//애플리케이션 클라이언트 시크릿값";
     private final String API_URI = "https://openapi.naver.com/v1/papago/n2mt";
     
-	public TextConverter() {
+	public TextConverterV2() {
 		this.setTitle("텍스트 변환");
 		
 		textIn = new JTextArea(10, 14);
@@ -86,6 +86,8 @@ public class TextConverter extends JFrame implements ActionListener{
         requestHeaders.put("X-Naver-Client-Secret", CLINENT_SECRET);
 
         String result = post(API_URI, requestHeaders, text);
+        result = result.substring(result.indexOf("translatedText") + "translatedText".length() + 3
+				, result.indexOf("engineType") - 3);
 		return result;
 	}
 	
