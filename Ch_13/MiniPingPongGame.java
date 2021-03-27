@@ -6,16 +6,16 @@ import java.awt.event.*;
 
 public class MiniPingPongGame extends JPanel implements KeyListener{
 	private Ball ball;
+	private Score score;
 	private Racquet racquet1;
 	private Racquet racquet2;
 	
 	public MiniPingPongGame() {
+		score = new Score(600, 400);
 		ball = new Ball(this, Color.red);
 		this.setBackground(Color.green);
 		racquet1 = new Racquet(this, 10, 150, Color.blue, 1);
-		System.out.println(racquet1.id);
 		racquet2 = new Racquet(this, 560, 150, Color.yellow, 2);
-		System.out.println(racquet2.id);
 		this.setFocusable(true);
 		this.addKeyListener(this);
 	}
@@ -24,6 +24,7 @@ public class MiniPingPongGame extends JPanel implements KeyListener{
 	public void paint(Graphics g) {
 		super.paint(g);
 		Graphics2D g2d = (Graphics2D)g;
+		score.draw(g2d);
 		ball.draw(g2d);
 		racquet1.draw(g2d);
 		racquet2.draw(g2d);
@@ -76,7 +77,7 @@ public class MiniPingPongGame extends JPanel implements KeyListener{
 	
 	class Ball {
 		private static final int RADIUS = 20;
-		private int x = 0, y = 0, xSpeed = 3, ySpeed = 3;
+		private int x = 300, y = 200, xSpeed = 3, ySpeed = 3;
 		private MiniPingPongGame game;
 		private Color color;
 		
@@ -85,10 +86,25 @@ public class MiniPingPongGame extends JPanel implements KeyListener{
 			this.color = color;
 		}
 		
+		public void startPosition() {
+			this.x = 300;
+			this.y = 200;
+		}
+		
 		public void move() {
-			if(x + xSpeed < 0) xSpeed = 3;
-			if(x + xSpeed > game.getWidth() - 2 * RADIUS) xSpeed = -3;
-			if(y + ySpeed < 0) ySpeed = 3;
+			if(x + xSpeed < 0) {
+				xSpeed = 3;
+				score.player2++;
+				startPosition();
+			}
+			if(x + xSpeed > game.getWidth() - 2 * RADIUS) {
+				xSpeed = -3;
+				score.player1++;
+				startPosition();
+			}
+			if(y + ySpeed < 0) {
+				ySpeed = 3;
+			}
 			if(y + ySpeed > game.getHeight() - 2 * RADIUS) ySpeed = -3;
 			if(collision()) xSpeed = -xSpeed;
 			x += xSpeed;
@@ -181,6 +197,11 @@ class Score {
 	
 	public void draw(Graphics g) {
 		g.setColor(Color.white);
-//		g.setFont(new Font)
+		g.setFont(new Font(Font.SANS_SERIF, Font.BOLD, 60));
+		
+		g.drawLine(GAME_WIDTH/2, 0, GAME_WIDTH/2, GAME_HEIGHT);
+	
+		g.drawString(String.valueOf(player1/10) + String.valueOf(player1%10), GAME_WIDTH/2 - 85, 50);
+		g.drawString(String.valueOf(player2/10) + String.valueOf(player2%10), GAME_WIDTH/2 + 20, 50);
 	}
 }
