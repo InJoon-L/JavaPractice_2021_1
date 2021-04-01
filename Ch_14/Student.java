@@ -5,6 +5,10 @@ public class Student {
 	private String dept;
 	private int grade;
 	
+	public Student(String name, int grade) {
+		this.name = name;
+		this.grade = grade;
+	}
 	public String getName() {
 		return name;
 	}

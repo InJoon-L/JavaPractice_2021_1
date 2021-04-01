@@ -14,7 +14,7 @@ public class GenericTest {
 		System.out.println(i);
 		
 		GenericBox<Student> box3 = new GenericBox<>();
-		box3.setContent(new Student());
+//		box3.setContent(new Student());
 		Student std = box3.getContent();
 		System.out.println(std);
 	}

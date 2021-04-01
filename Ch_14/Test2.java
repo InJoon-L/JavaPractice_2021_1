@@ -17,9 +17,7 @@ public class Test2 {
 		
 		ArrayList<Student> stdList = new ArrayList<>();
 		for (int i = 0; i < 100; i++) {
-			stdList.add(new Student());
+//			stdList.add(new Student());
 		}
-		
-		
 	}
 }
