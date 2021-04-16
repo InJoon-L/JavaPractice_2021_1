@@ -24,6 +24,5 @@ public class PQtest {
 		while(q.size() > 0) {
 			System.out.println(q.poll());
 		}
-		
 	}
 }
