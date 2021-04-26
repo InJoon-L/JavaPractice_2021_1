@@ -1,0 +1,94 @@
+package Ch_15;
+
+import java.util.*;
+
+public class MapTest {
+	public static void main(String[] args) {
+		test1();
+	}
+	
+	public static void test1() {
+		/*
+			Map 객체, HashMap 객체를 생성하자.
+			맵은 <key, value>의 쌍으로 저장하고
+			key값을 통해 값을 인출한다.
+			Map이라는 놈이 generic 인터페이스이고
+			이글 구현한 HashMap, TreeMap, LinkedHashMap 클래스들은
+			제네릭 클래스라는 것이다.
+			이 의미는
+			저 객체들을 생성할 때 타입을 지정해줘야 한다.
+		*/
+		
+		// ArrayList<Integer> list = new ArrayList<>();
+		// ArrayList<String> list2 = new ArrayList<>();
+		// ArrayList<Student> list3 = new ArrayList<>();
+		
+		// Map에 <학번, 학생객체> 이렇게 저장할 예정.
+		Map<String, Student> map = new HashMap<>();
+		map.put("2000101", new Student(2000101, "홍길동"));
+		map.put("2000102", new Student(2000102, "일지매"));
+		map.put("2000103", new Student(2000103, "이몽룡"));
+		map.put("2000104", new Student(2000104, "성춘향"));
+		map.put("2000105", new Student(2000105, "방자"));
+		
+//		Student value = map.get("2000103");
+//		System.out.println(value.getName());
+//		
+//		map.put("2000103", new Student(2000103, "이상룡"));
+//		value = map.get("2000103");
+//		System.out.println(value.getName());
+		
+		/*
+			map이라는 자료구조에 들어가 있는 모든 원소들은 다 읽을 수 있는 방법은
+			1. map에게 니가 가진 원소의 모든 키집합을 요청하고 
+			그 집합의 각 원소를 가지고 map에게 값을 요청하는 방법
+			2. map에거 <key, value> 쌍으로 저장된 엔트리 집합을 요청해서
+			그 집합의 원소를 하나씩 읽는 방법.
+		*/
+		Set<String> keyset = map.keySet();
+		// Set의 원소를 하나씩 접근하는 방법은 뭔가요?
+		
+		Iterator<String> iter = keyset.iterator();
+		while(iter.hasNext()) {
+			String key = iter.next();
+			System.out.println("key: " + key + ", value: " + map.get(key));
+		}
+		
+		// map에서 엔트리란 함은 <key, value>의 쌍으로 구성된 객체.
+		// 객체라 함은 이 객체를 정의하는 클래스가 있다는 의미.
+		for (Map.Entry<String, Student> s : map.entrySet()) {
+			System.out.println(s);
+		}
+	}
+}
+
+class Student {
+	private int hakbun;
+	private String name;
+	
+	@Override
+	public String toString() {
+		return "[학번: " + getHakbun() + ", 이름: " + getName() + "]";
+	}
+	
+	public Student(int hakbun, String name) {
+		super();
+		this.hakbun = hakbun;
+		this.name = name;
+	}
+	
+	public int getHakbun() {
+		return hakbun;
+	}
+	public void setHakbun(int hakbun) {
+		this.hakbun = hakbun;
+	}
+	
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+}
