@@ -4,7 +4,30 @@ import java.util.*;
 
 public class MapTest {
 	public static void main(String[] args) {
-		test1();
+//		test1();
+		test2();
+	}
+	
+	public static void test2() {
+		/*
+			친구들 전화번호를 저장하는 map 객체 생성할꺼야
+			<이름, 전화번호> "홍길동", "010-1234-5678"
+		*/
+		String[] names = {"홍길동", "일지매", "성춘향", "이몽룡"};
+		String[] phones = {"010-1234-5678", "010-2234-5578", "010-1235-7678", "010-2244-8778"};
+		Map<String, String> phoneBook = new HashMap<>();
+		for (int i = 0; i < names.length; i++) {
+			phoneBook.put(names[i], phones[i]);
+		}
+		
+		Scanner input = new Scanner(System.in);
+		while(true) {
+			System.out.print("친구 이름: ");
+			String name = input.nextLine();
+			if(name.equals("")) break;
+			String phone = phoneBook.get(name);
+			System.out.println(name + "의 전화번호는 " + phone + "입니다.");
+		}
 	}
 	
 	public static void test1() {
@@ -47,7 +70,6 @@ public class MapTest {
 		*/
 		Set<String> keyset = map.keySet();
 		// Set의 원소를 하나씩 접근하는 방법은 뭔가요?
-		
 		Iterator<String> iter = keyset.iterator();
 		while(iter.hasNext()) {
 			String key = iter.next();
@@ -56,6 +78,15 @@ public class MapTest {
 		
 		// map에서 엔트리란 함은 <key, value>의 쌍으로 구성된 객체.
 		// 객체라 함은 이 객체를 정의하는 클래스가 있다는 의미.
+		Set<Map.Entry<String, Student>> entry = map.entrySet();
+		Iterator<Map.Entry<String, Student>> iter2 = entry.iterator();
+		while(iter2.hasNext()) {
+			Map.Entry<String, Student> entryObj = iter2.next();
+			String key = entryObj.getKey();
+			Student val = entryObj.getValue();
+			System.out.println("key: " + key + ", value: " + val);
+		}
+		
 		for (Map.Entry<String, Student> s : map.entrySet()) {
 			System.out.println(s);
 		}

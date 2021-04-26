@@ -11,7 +11,6 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 
-//나중에 papago api 추가예정
 public class PapagoApi extends JFrame implements ActionListener{
 	private JButton converBtn;
 	private JButton cancelBtn;

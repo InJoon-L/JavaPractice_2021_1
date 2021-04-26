@@ -28,13 +28,13 @@ public class MyArrayList2<T> {
 	}
 	
 	public void add(T value) {
-		if(size == capacity) increaseCapacity();
+		if(size >= capacity) increaseCapacity();
 		
 		arr[size++] = value;
 	}
 
 	public void add(int idx, T value) {
-		if(size == capacity) increaseCapacity();
+		if(size >= capacity) increaseCapacity();
 		
 		// 맨 뒤에 있는 원소부터 오른쪽으로 한 칸씩 민다.
 		for (int i = size - 1; i >= idx; i--) {
