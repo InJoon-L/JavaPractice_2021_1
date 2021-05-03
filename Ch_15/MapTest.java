@@ -4,8 +4,8 @@ import java.util.*;
 
 public class MapTest {
 	public static void main(String[] args) {
-//		test1();
-		test2();
+		test1();
+//		test2();
 	}
 	
 	public static void test2() {
@@ -28,6 +28,8 @@ public class MapTest {
 			String phone = phoneBook.get(name);
 			System.out.println(name + "의 전화번호는 " + phone + "입니다.");
 		}
+		System.out.println("프로그램을 종료합니다...");
+		input.close();
 	}
 	
 	public static void test1() {
@@ -86,9 +88,9 @@ public class MapTest {
 			Student val = entryObj.getValue();
 			System.out.println("key: " + key + ", value: " + val);
 		}
-		
+		System.out.println();
 		for (Map.Entry<String, Student> s : map.entrySet()) {
-			System.out.println(s);
+			System.out.println("key: " + s.getKey() + ", value: " + s.getValue());
 		}
 	}
 }
