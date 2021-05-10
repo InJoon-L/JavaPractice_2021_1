@@ -3,6 +3,7 @@ package Ch_15;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 import java.util.*;
 
 public class SimpleDictionary extends JPanel implements ActionListener{
@@ -18,7 +19,8 @@ public class SimpleDictionary extends JPanel implements ActionListener{
 	
 	// Map 객체를 단어장 구현 사용할꺼다.
 	// <key, value> 쌍으로 저장. key는 한글단어, value는 대응되는 영어단어.
-	private Map<String, String> dict = new HashMap<>();
+	private Map<String, String> words = new HashMap<>();
+	private static final String DIC_FILE_NAME = "dict.props";
 	
 	public SimpleDictionary() {
 		// Panel의 기본 레이아웃은 : FlowLayout
@@ -33,7 +35,28 @@ public class SimpleDictionary extends JPanel implements ActionListener{
 		this.setPreferredSize(new Dimension(600, 50));
 	
 		// 파일에 key=value 형태로 저장된 엔트리들을 읽어서, dict를 구성하자.
+		buildDictionaryFromFile();
+	}
+	
+	
+	private void buildDictionaryFromFile() {
+		// Properties 일종의 Map인데
+		// key, value의 타입이 각각 String, String으로
+		// 고정된 일종의 Map이다.
+		Properties props = new Properties();
 		
+		// 파일에서 읽어서 props 객체의 <key, value>
+		// 쌍을 구성할 수 있다.
+		try (FileReader fReader = new FileReader(DIC_FILE_NAME)) {
+			props.load(fReader);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
+		
+		Set<Object> set = props.keySet();
+		for (Object obj : set) {
+			words.put((String)obj, (String)props.get(obj));
+		}
 	}
 
 	@Override
@@ -51,7 +74,7 @@ public class SimpleDictionary extends JPanel implements ActionListener{
 				단어를 찾을 수 없습니다 라고 출력해준다.
 				inputField를 빈 문자열로 설정.
 			*/
-			String value = dict.get(key);
+			String value = words.get(key);
 			if (value != null) { // 대응되는 단어가 있는 경우
 				JOptionPane.showMessageDialog(this, value, key, 
 						JOptionPane.INFORMATION_MESSAGE);
@@ -67,16 +90,26 @@ public class SimpleDictionary extends JPanel implements ActionListener{
 				dict.put(입력필드에 입력된 단어, inputDialog에 입력된 단어);
 				inputField를 빈 문자열로 설정.
 			*/
-			String value = JOptionPane.showInputDialog(this, 
+			String value = JOptionPane.showInputDialog(this,
 					key + "에 대응되는 영어단어를 입력하세요");
 			if (value.trim().length() == 0) return;
-			dict.put(key, value);
+			words.put(key, value);
 			// 파일에도 key=value 의 쌍으로 기록해놓자.
-			
+			addWordToFile(key, value);
 			JOptionPane.showMessageDialog(this, "["+value+"]"+"영어단어가 추가되었습니다", 
 					key, JOptionPane.INFORMATION_MESSAGE);
 		}
 		inputField.setText("");
+	}
+	
+	private void addWordToFile(String key, String value) {
+		try (FileWriter fWriter = 
+				new FileWriter(DIC_FILE_NAME, true)) {
+			fWriter.write(key + "=" + value + "\n");
+			
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
 	}
 	
 	public static void main(String[] args) {
