@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
+import java.sql.*;
 import java.util.*;
 
 public class SimpleDictionary extends JPanel implements ActionListener{
@@ -21,6 +22,10 @@ public class SimpleDictionary extends JPanel implements ActionListener{
 	// <key, value> 쌍으로 저장. key는 한글단어, value는 대응되는 영어단어.
 	private Map<String, String> words = new HashMap<>();
 	private static final String DIC_FILE_NAME = "dict.props";
+	private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+	private static final String DB_SERVER_URL = "jdbc:mysql://localhost:3306/java";
+	private static final String DB_USER = "root";
+	private static final String DB_USER_PW = "dls980728";
 	
 	public SimpleDictionary() {
 		// Panel의 기본 레이아웃은 : FlowLayout
@@ -35,9 +40,83 @@ public class SimpleDictionary extends JPanel implements ActionListener{
 		this.setPreferredSize(new Dimension(600, 50));
 	
 		// 파일에 key=value 형태로 저장된 엔트리들을 읽어서, dict를 구성하자.
-		buildDictionaryFromFile();
+		// DB에서 레코드를 읽고, 그 레코드를 이용해 dict 맵을 구성하자.
+//		buildDictionaryFromFile();
+		buildDictionaryFromDB();
 	}
 	
+	private void buildDictionaryFromDB() {
+		/*
+			1. Database 연결
+				a. JDBC Driver를 로딩 Class.forName("com.mysql.jdbc.Driver");
+				b. Connection con = DriverManager.getConnection();
+				  메서드를 호출해 연결을 establish
+				  이 때 연결 정보를 getConnection() 메서드에 전달해줘야 함.
+				  연결정보: DB Server의 URL
+				   => (ip 주소, port번호)
+				    db 사용자의 아이디와 암호
+			2. Connection 객체를 통해 SQL문 실행을 서버에 요청하고 그결과를 받아서 처리한다.
+				크게 두 가지 방벙이 있다.
+				첫 째는 con.createStatement() 메소드 호출을 통해서
+				반환되는 Statement 객체를 이용하는 방법 (정적 SQL 문)
+					정적 SQL문: 프로그래밍 시점에 실행할 SQL문 결정되고 고정된 경우.
+				두 번째는 con.preparedStatement() 메서드 호출을 통해서
+				반환되는 PreparedStatement 객체를 이용하는 방법 (동적 SQL 문)
+					동적 SQL문: 프로그래밍 시점에 실행할 SQL문 결정되지 않고 변경되는 SQL문
+					select * from dict where han = ?
+				이 예에서는 PreparedStatement 객체를 이용한다.
+					String sql = "select * from dict";
+					PreparedStatement pstmt = con.preparedStatement(sql);
+					실행 준비가 된 PreparedStatement를 실행시키는 방법은 크게 2가지
+					첫 번째: 실행할 SQL 문이 insert, delete, 또는 update 문인 경우
+					insert into ...
+					delete from dict ...
+					update set eng = ... from ...
+					
+					pstmt.executeUpdate();
+					두 번째: 실행할 SQL 문이 select 문인 경우.
+					select ...
+					
+					ResultSet rs = pstmt.executeQuery();
+			3. DB Server와의 연결을 해제(close)한다.
+				con.close();
+		*/
+		// MySQL JDBC 드라이버를 메모리에 적재
+		// 드라이버 클래스 이름은 DBMS마다 다르다.
+		try {
+			Class.forName(JDBC_DRIVER);
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+			return;
+		}
+		
+		// DB 서버에 연결
+		try (Connection con = 
+				DriverManager.getConnection(DB_SERVER_URL, DB_USER, DB_USER_PW)) 
+		{
+			// SELECT 문 실행
+			String sql = "select * from dict";
+			PreparedStatement pstmt = con.prepareStatement(sql);
+			ResultSet rs = pstmt.executeQuery();
+			
+			while(rs.next()) {
+				// 현재 포인터가 가리키는 칼럼 값을 빼오면 됨.
+				// 각 칼럼의 타입에 따라서, 호출할 메서드가 달라진다.
+				// 예를 들어서 char, varchar 타입의 칼럼은
+				// getString("칼럼이름" 또는 "칼럼 위치");
+				// int 타입의 칼럼은 getInt(...);
+				// DateTime, Date 타입의 칼럼 값은 getDate();
+				// rs.getString("han");
+				String han = rs.getString(1);
+				// rs.getString("eng");
+				String eng = rs.getString(2);
+				
+				words.put(han, eng);
+			}
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		} 
+	}
 	
 	private void buildDictionaryFromFile() {
 		// Properties 일종의 Map인데
@@ -95,11 +174,17 @@ public class SimpleDictionary extends JPanel implements ActionListener{
 			if (value.trim().length() == 0) return;
 			words.put(key, value);
 			// 파일에도 key=value 의 쌍으로 기록해놓자.
+			// DB에도 <key, value>의 쌍을 하나의 레코드로 저장하자.
+			addToDB(key, value);
 			addWordToFile(key, value);
 			JOptionPane.showMessageDialog(this, "["+value+"]"+"영어단어가 추가되었습니다", 
 					key, JOptionPane.INFORMATION_MESSAGE);
 		}
 		inputField.setText("");
+	}
+	
+	private void addToDB(String key, String value) {
+		
 	}
 	
 	private void addWordToFile(String key, String value) {
