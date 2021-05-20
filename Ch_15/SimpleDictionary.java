@@ -106,9 +106,9 @@ public class SimpleDictionary extends JPanel implements ActionListener{
 				// getString("칼럼이름" 또는 "칼럼 위치");
 				// int 타입의 칼럼은 getInt(...);
 				// DateTime, Date 타입의 칼럼 값은 getDate();
-				// rs.getString("han");
+				// rs.getString("hword");
 				String han = rs.getString(1);
-				// rs.getString("eng");
+				// rs.getString("eword");
 				String eng = rs.getString(2);
 				
 				words.put(han, eng);
@@ -173,6 +173,7 @@ public class SimpleDictionary extends JPanel implements ActionListener{
 					key + "에 대응되는 영어단어를 입력하세요");
 			if (value.trim().length() == 0) return;
 			words.put(key, value);
+			words.put(value, key);
 			// 파일에도 key=value 의 쌍으로 기록해놓자.
 			// DB에도 <key, value>의 쌍을 하나의 레코드로 저장하자.
 			addToDB(key, value);
@@ -180,11 +181,40 @@ public class SimpleDictionary extends JPanel implements ActionListener{
 			JOptionPane.showMessageDialog(this, "["+value+"]"+"영어단어가 추가되었습니다", 
 					key, JOptionPane.INFORMATION_MESSAGE);
 		}
-		inputField.setText("");
+//		inputField.setText("");
 	}
 	
 	private void addToDB(String key, String value) {
-		
+		/*
+		 	1. 드라이버 클래스는 딱 한 번만 메모리에 적재하면 됨.
+		 	근데, 이미 객체가 생성될 때, 생성자에서 적재되었음.
+		 	여기서는 적재할 필요가 없다.
+		 	
+		 	2. 데이터베이스에 연결
+		 	3. SQL 문 실행
+		 	4. 데이터베이스 연결 해제
+		*/
+		try (Connection con = 
+				DriverManager.getConnection(DB_SERVER_URL, DB_USER, DB_USER_PW)) {
+			String sql = "insert into dict values (?, ?)";
+			PreparedStatement pstmt = con.prepareStatement(sql);
+			
+			// ? 자리에 값을 채운 후에, 서버에게 
+			// 실행준비된 SQL문을 실행하라고 요청해야 한다.
+			pstmt.setString(1, key);
+			pstmt.setString(2, value);
+			
+			int rs = pstmt.executeUpdate(); // 실행요청
+			
+			if (rs != 0) {
+				System.out.println("DB insert success");
+			} else {
+				System.out.println("DB insert false");
+			}
+			
+		} catch (Exception e) {
+			System.out.println(e.getMessage());
+		}
 	}
 	
 	private void addWordToFile(String key, String value) {
