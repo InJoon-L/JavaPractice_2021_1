@@ -177,7 +177,7 @@ public class SimpleDictionary extends JPanel implements ActionListener{
 			// 파일에도 key=value 의 쌍으로 기록해놓자.
 			// DB에도 <key, value>의 쌍을 하나의 레코드로 저장하자.
 			addToDB(key, value);
-			addWordToFile(key, value);
+//			addWordToFile(key, value);
 			JOptionPane.showMessageDialog(this, "["+value+"]"+"영어단어가 추가되었습니다", 
 					key, JOptionPane.INFORMATION_MESSAGE);
 		}
