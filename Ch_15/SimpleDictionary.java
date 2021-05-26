@@ -184,6 +184,41 @@ public class SimpleDictionary extends JPanel implements ActionListener{
 //		inputField.setText("");
 	}
 	
+	private void addWordToDB(String key, String value) {
+		/*
+	       *  1. DB연결
+	       *     (1) jdbc 드라이버 메모리 적재(한 번만 하면 되니까, 여기서는 안해도 되겠다..)
+	       *     (2) DriverManager.getConnection(url, id, ps) 호출해서
+	       *        Connection 객체를 생성하고
+	       *  
+	       *  2. sql문 실행
+	       *     (1) Conection 객체에게 실행할 sql문을 실행준비 요청하고 con.prepareStatement(sql);
+	       *        PreparedStatement 객체가 반환된다.
+	       *     (2) PreparedStatement 객체에게 서버에게 실행요청 보내라
+	       *        PreparedStatement.excuteUpdate() <- 실행할 sql문의 insert, delete, 또는 update 일때
+	       *        PreparedStatement.excuteQuery(); <- 실행할 sql문이 select 문일 때
+	       *  3. DB 연결 해제
+	       *     con.close();
+	       */
+	      
+	      	// db 서버에 연결
+			try(Connection con = 
+					DriverManager.getConnection(DB_SERVER_URL, DB_USER, DB_USER_PW)) {
+				
+				String sql = "insert into dict value(?, ?)";
+				
+				PreparedStatement pstmt = con.prepareStatement(sql); // sql문을 db서버로 보내서 실행
+				
+				pstmt.setString(1, key);
+				pstmt.setString(2, value);
+				
+				pstmt.executeUpdate();
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	}
+	
 	private void addToDB(String key, String value) {
 		/*
 		 	1. 드라이버 클래스는 딱 한 번만 메모리에 적재하면 됨.
