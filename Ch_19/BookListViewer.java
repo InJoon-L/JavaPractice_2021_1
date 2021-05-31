@@ -30,7 +30,7 @@ public class BookListViewer extends JFrame implements ActionListener {
 		
 		con = DriverManager.getConnection(DB_SERVER_URL, DB_USER, DB_USER_PW);
 		String sql = "select * from books order by book_id desc";
-		pstmt = con.prepareStatement(sql);
+		pstmt = con.prepareStatement(sql, ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
 		
 		// select 문을 실행할 때는 executeQuery() 메서드를 사용하고
 		// 그 외, insert, delete, update 문을 실행할 때는

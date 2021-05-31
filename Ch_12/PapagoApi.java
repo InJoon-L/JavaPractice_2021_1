@@ -140,6 +140,7 @@ public class PapagoApi extends JFrame implements ActionListener{
         
         try {
 			jsonOb1 = (JSONObject) jsonParser.parse(streamReader);
+			System.out.println(jsonOb1);
 			JSONObject jsonOb2 = (JSONObject) jsonOb1.get("message");
 			JSONObject jsonOb3 = (JSONObject) jsonOb2.get("result");
 			result = jsonOb3.get("translatedText").toString();
